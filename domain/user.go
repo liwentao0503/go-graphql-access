@@ -5,6 +5,7 @@ import (
 	"context"
 )
 
+// User 用户相关信息实体类
 type User struct {
 	UserID string `json:"userID"`
 	Mobile string `json:"mobile"`
@@ -37,17 +38,22 @@ func (u *User) ToBasicUserEntity(user mysql.BasicUser) User {
 	}
 }
 
+// UserService 用户服务防腐层接口
 type UserService interface {
+	// GetBasicUser 获取用户基础信息
 	GetBasicUser(ctx context.Context, userID string) (User, error)
+	// ADDBasicUser 新增用户基础信息
 	ADDBasicUser(ctx context.Context, user User) error
+	// UpdateBasicUser 修改用户实体信息
 	UpdateBasicUser(ctx context.Context, user User) error
 }
 
+// NewUserService 初始化用户服务变量
 func NewUserService() UserService {
 	return &User{}
 }
 
-func (u User) GetBasicUser(ctx context.Context, userID string) (User, error) {
+func (u *User) GetBasicUser(ctx context.Context, userID string) (User, error) {
 	userInfo, err := mysql.NewBasicUser().Get(ctx, userID)
 	if err != nil {
 		return User{}, err
@@ -55,10 +61,10 @@ func (u User) GetBasicUser(ctx context.Context, userID string) (User, error) {
 	return u.ToBasicUserEntity(userInfo), nil
 }
 
-func (u User) ADDBasicUser(ctx context.Context, user User) error {
+func (u *User) ADDBasicUser(ctx context.Context, user User) error {
 	return mysql.NewBasicUser().ADD(ctx, user.FromBasicUserEntity())
 }
 
-func (u User) UpdateBasicUser(ctx context.Context, user User) error {
+func (u *User) UpdateBasicUser(ctx context.Context, user User) error {
 	return mysql.NewBasicUser().Update(ctx, user.FromBasicUserEntity())
 }

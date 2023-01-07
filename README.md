@@ -18,3 +18,12 @@ domain: 逻辑薄，仅做业务大结构体的构建，数据流转
 infra: 初始化db、rpc连接方式，数据存储结构体建设
 
 ## 2.测试使用方式
+
+curl --location --request POST 'http://localhost:8080/graphql' \
+--header 'Content-Type: application/graphql' \
+--header 'Cookie: pony' \
+--data-raw 'query query {
+    getUserInfo(userID: "pony"){
+        userID, mobile, name
+    }
+}'

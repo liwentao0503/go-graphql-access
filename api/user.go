@@ -19,6 +19,7 @@ var UserInfoType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"userID": &graphql.Field{Type: graphql.String, Description: "用户ID"},
 		"mobile": &graphql.Field{Type: graphql.String, Description: "用户手机号"},
+		"name":   &graphql.Field{Type: graphql.String, Description: "用户姓名"},
 	},
 })
 
@@ -72,6 +73,7 @@ var updateUserInfo = &graphql.Field{
 	},
 }
 
+// BuildUser 构建接入层User
 func BuildUser(args map[string]interface{}) (*User, error) {
 	user := User{}
 	return &user, mapstructure.Decode(args, &user)
