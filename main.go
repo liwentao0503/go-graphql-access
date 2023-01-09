@@ -36,7 +36,7 @@ func main() {
 	for k, v := range router {
 		http.Handle(k, v)
 	}
-	// and serve!
+	// listen and serve
 	http.ListenAndServe(":8080", nil)
 }
 
