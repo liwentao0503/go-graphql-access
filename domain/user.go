@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"code_struct/infra/mysql"
 	"context"
+
+	"code_struct/infra/mysql"
 )
 
 // User 用户相关信息实体类
