@@ -33,11 +33,9 @@ func main() {
 	if err := Init(); err != nil {
 		panic(fmt.Sprintf("init err %v", err))
 	}
-
 	for k, v := range router {
 		http.Handle(k, v)
 	}
-
 	// and serve!
 	http.ListenAndServe(":8080", nil)
 }
