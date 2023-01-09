@@ -4,6 +4,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+// QueryType api查询声明
 var QueryType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "query",
 	Fields: graphql.Fields{
@@ -11,6 +12,7 @@ var QueryType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+// MutationType 增、改声明
 var MutationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "mutation",
 	Fields: graphql.Fields{
@@ -19,6 +21,7 @@ var MutationType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+// SubscriptionType 订阅声明
 var SubscriptionType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "subscription",
 	Fields: graphql.Fields{

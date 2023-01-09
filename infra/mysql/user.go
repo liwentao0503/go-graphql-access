@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// BasicUser db存储实体
 type BasicUser struct {
 	gorm.Model
 	UserID string `gorm:"user_id"`
@@ -13,14 +14,17 @@ type BasicUser struct {
 	Mobile string `gorm:"mobile"`
 }
 
+// TableName 表名
 func TableName() string {
 	return "basicUser"
 }
 
+// NewBasicUser 初始化db存储实体
 func NewBasicUser() UserRepository {
 	return &BasicUser{}
 }
 
+// UserRepository db存储实体防腐层
 type UserRepository interface {
 	// Get 获取db中用户信息
 	Get(ctx context.Context, userID string) (BasicUser, error)
