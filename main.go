@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"code_struct/api"
@@ -29,7 +30,9 @@ var router = map[string]*gqlhandler.Handler{
 }
 
 func main() {
-	Init()
+	if err := Init(); err != nil {
+		panic(fmt.Sprintf("init err %v", err))
+	}
 
 	for k, v := range router {
 		http.Handle(k, v)
@@ -39,6 +42,9 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-func Init() {
-	// mysql.InitDB()
+func Init() error {
+	// if err := mysql.InitDB(); err != nil {
+	// 	return err
+	// }
+	return nil
 }
