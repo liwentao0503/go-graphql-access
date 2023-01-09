@@ -17,6 +17,8 @@ domain: 逻辑薄，仅做业务大结构体的构建，数据流转
 
 infra: 初始化db、rpc连接方式，数据存储结构体建设
 
+router: 配置路由信息
+
 ## 2.测试使用方式
 
 curl --location --request POST 'http://localhost:8080/graphql' \
