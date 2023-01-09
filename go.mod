@@ -1,4 +1,4 @@
-module code_struct
+module go-graphql-access
 
 go 1.19
 

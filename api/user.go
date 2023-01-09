@@ -1,8 +1,8 @@
 package api
 
 import (
-	"code_struct/common"
-	"code_struct/domain"
+	"go-graphql-access/common"
+	"go-graphql-access/domain"
 
 	"github.com/graphql-go/graphql"
 	"github.com/mitchellh/mapstructure"

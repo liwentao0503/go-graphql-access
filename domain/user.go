@@ -3,7 +3,7 @@ package domain
 import (
 	"context"
 
-	"code_struct/infra/mysql"
+	"go-graphql-access/infra/mysql"
 )
 
 // User 用户相关信息实体类
