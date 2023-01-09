@@ -15,20 +15,25 @@ var Schema, _ = graphql.NewSchema(graphql.SchemaConfig{
 	Subscription: api.SubscriptionType,
 })
 
+// create a graphl-go HTTP handler with our previously defined schema
+// and we also set it to return pretty JSON output
+var handler *gqlhandler.Handler = gqlhandler.New(&gqlhandler.Config{
+	Schema:   &Schema,
+	Pretty:   true,
+	GraphiQL: true,
+})
+
+var router = map[string]*gqlhandler.Handler{
+	"/graphql":   handler,
+	"/graphqlv2": handler,
+}
+
 func main() {
 	Init()
 
-	// create a graphl-go HTTP handler with our previously defined schema
-	// and we also set it to return pretty JSON output
-	h := gqlhandler.New(&gqlhandler.Config{
-		Schema:   &Schema,
-		Pretty:   true,
-		GraphiQL: true,
-	})
-
-	// serve a GraphQL endpoint at `/graphql`
-	http.Handle("/graphql", h)
-	http.Handle("/graphqlv2", h)
+	for k, v := range router {
+		http.Handle(k, v)
+	}
 
 	// and serve!
 	http.ListenAndServe(":8080", nil)
