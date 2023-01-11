@@ -24,5 +24,8 @@ func Init() error {
 	// if err := mysql.InitDB(); err != nil {
 	// 	return err
 	// }
+	// if err := redis.InitDB(); err != nil {
+	// 	return err
+	// }
 	return nil
 }

@@ -38,8 +38,7 @@ func (w Writer) Printf(format string, args ...interface{}) {
 	*/
 }
 
-func InitDB() {
-	var err error
+func InitDB() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s", user, passwd, host, port, dbName, other)
 	newLogger := logger.New(
 		Writer{},
@@ -52,7 +51,7 @@ func InitDB() {
 	)
 
 	// MySQl 驱动程序提供了 一些高级配置 可以在初始化过程中使用
-	db, err = gorm.Open(mysql.New(mysql.Config{
+	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,
 		DefaultStringSize:         256,   // string 类型字段的默认长度
 		DisableDatetimePrecision:  true,  // 禁用 datetime 精度，MySQL 5.6 之前的数据库不支持
@@ -75,7 +74,7 @@ func InitDB() {
 	})
 
 	if err != nil {
-		panic(fmt.Sprintf("conn mysql fail err: %s", err))
+		return err
 	}
 
 	sqlDb, _ := db.DB()
@@ -86,4 +85,5 @@ func InitDB() {
 	sqlDb.SetMaxOpenConns(25)
 	// SetConnMaxLifetime: 设置链接可复用的最大时间
 	sqlDb.SetConnMaxLifetime(5 * time.Minute)
+	return nil
 }

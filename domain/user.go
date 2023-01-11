@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"go-graphql-access/infra/mysql"
+	"go-graphql-access/infra/redis"
 )
 
 // User 用户相关信息实体类
@@ -31,12 +32,22 @@ func (u *User) FromBasicUserEntity() mysql.BasicUser {
 }
 
 // ToBasicEntity 从db实体转化为业务实体
-func (u *User) ToBasicUserEntity(user mysql.BasicUser) User {
-	return User{
-		UserID: user.UserID,
-		Mobile: user.Mobile,
-		Name:   user.Name,
+func (u *User) ToBasicUserEntity(user mysql.BasicUser) {
+	u.UserID = user.UserID
+	u.Mobile = user.Mobile
+	u.Name = user.Name
+}
+
+// FromBasicEntity 从业务实体转化为db实体
+func (u *User) FromFCUserEntity() redis.FCUser {
+	return redis.FCUser{
+		FCIDs: u.FCIDs,
 	}
+}
+
+// ToBasicEntity 从db实体转化为业务实体
+func (u *User) ToFCUserEntity(user redis.FCUser) {
+	u.FCIDs = user.FCIDs
 }
 
 // UserService 用户服务防腐层接口
@@ -47,6 +58,10 @@ type UserService interface {
 	ADDBasicUser(ctx context.Context, user User) error
 	// UpdateBasicUser 修改用户实体信息
 	UpdateBasicUser(ctx context.Context, user User) error
+	// GetFCUser 获取喜爱分类ID列表
+	GetFCUser(ctx context.Context, userID string) (User, error)
+	// SetFCUser 设置喜爱分类ID
+	SetFCUser(ctx context.Context, IDs []uint64) error
 }
 
 // NewUserService 初始化用户服务变量
@@ -55,11 +70,12 @@ func NewUserService() UserService {
 }
 
 func (u *User) GetBasicUser(ctx context.Context, userID string) (User, error) {
-	userInfo, err := mysql.NewBasicUser().Get(ctx, userID)
+	basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
 	if err != nil {
 		return User{}, err
 	}
-	return u.ToBasicUserEntity(userInfo), nil
+	u.ToBasicUserEntity(basicUser)
+	return *u, nil
 }
 
 func (u *User) ADDBasicUser(ctx context.Context, user User) error {
@@ -68,4 +84,17 @@ func (u *User) ADDBasicUser(ctx context.Context, user User) error {
 
 func (u *User) UpdateBasicUser(ctx context.Context, user User) error {
 	return mysql.NewBasicUser().Update(ctx, user.FromBasicUserEntity())
+}
+
+func (u *User) GetFCUser(ctx context.Context, userID string) (User, error) {
+	fcUser, err := redis.NewFCUser().Get(ctx, userID)
+	if err != nil {
+		return User{}, err
+	}
+	u.ToFCUserEntity(fcUser)
+	return *u, nil
+}
+
+func (u *User) SetFCUser(ctx context.Context, IDs []uint64) error {
+	return redis.NewFCUser().Set(ctx, IDs)
 }
