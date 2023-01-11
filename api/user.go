@@ -68,7 +68,7 @@ var updateUserInfo = &graphql.Field{
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		user, err := BuildUser(p.Args)
 		if err != nil || user.WriteParamCheck() {
-			return nil, &common.ParamsError
+			return nil, common.ParamsError
 		}
 		return nil, common.FormatError(domain.NewUserService().
 			UpdateBasicUser(p.Context, user.FromEntity()))
