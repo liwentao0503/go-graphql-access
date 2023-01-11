@@ -9,7 +9,7 @@ import (
 
 func main() {
 	if err := Init(); err != nil {
-		panic(fmt.Sprintf("init err %v", err))
+		panic(fmt.Sprintf("init err %s", err.Error()))
 	}
 
 	for k, v := range router.Router {

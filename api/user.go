@@ -37,11 +37,11 @@ var getUserInfo = &graphql.Field{
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		user, err := BuildUser(p.Args)
 		if err != nil || user.ReadParamCheck() {
-			return nil, common.ErrorParamTypeError
+			return nil, common.ParamsError
 		}
 		userInfo, err := domain.NewUserService().GetBasicUser(p.Context, user.UserID)
 		if err != nil {
-			return nil, err
+			return nil, common.FormatError(err)
 		}
 		return user.ToEntity(userInfo), nil
 	},
@@ -54,9 +54,10 @@ var addUserInfo = &graphql.Field{
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		user, err := BuildUser(p.Args)
 		if err != nil || user.WriteParamCheck() {
-			return nil, common.ErrorParamTypeError
+			return nil, common.ParamsError
 		}
-		return nil, domain.NewUserService().ADDBasicUser(p.Context, user.FromEntity())
+		return nil, common.FormatError(domain.NewUserService().
+			ADDBasicUser(p.Context, user.FromEntity()))
 	},
 }
 
@@ -67,9 +68,10 @@ var updateUserInfo = &graphql.Field{
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		user, err := BuildUser(p.Args)
 		if err != nil || user.WriteParamCheck() {
-			return nil, common.ErrorParamTypeError
+			return nil, &common.ParamsError
 		}
-		return nil, domain.NewUserService().UpdateBasicUser(p.Context, user.FromEntity())
+		return nil, common.FormatError(domain.NewUserService().
+			UpdateBasicUser(p.Context, user.FromEntity()))
 	},
 }
 
