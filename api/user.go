@@ -43,7 +43,8 @@ var getUserInfo = &graphql.Field{
 		if err != nil {
 			return nil, common.FormatError(err)
 		}
-		return user.ToEntity(userInfo), nil
+		user.ToEntity(userInfo)
+		return user, nil
 	},
 }
 
@@ -107,10 +108,8 @@ func (u *User) FromEntity() domain.User {
 }
 
 // ToEntity 从业务实体转化为接入层实体
-func (u *User) ToEntity(user domain.User) User {
-	return User{
-		UserID: user.UserID,
-		Mobile: user.Mobile,
-		Name:   user.Name,
-	}
+func (u *User) ToEntity(user domain.User) {
+	u.UserID = user.UserID
+	u.Mobile = user.Mobile
+	u.Name = user.Name
 }
