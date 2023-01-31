@@ -120,6 +120,7 @@ func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User
 	for _, opt := range opts {
 		opt(&options)
 	}
+
 	if options.WithBasic {
 		basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
 		if err != nil {
@@ -127,6 +128,7 @@ func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User
 		}
 		u.ToBasicUserEntity(basicUser)
 	}
+
 	if options.WithFC {
 		fcUser, err := redis.NewFCUser().Get(ctx, userID)
 		if err != nil {
@@ -137,30 +139,12 @@ func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User
 	return *u, nil
 }
 
-func (u *User) GetBasicUser(ctx context.Context, userID string) (User, error) {
-	basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
-	if err != nil {
-		return User{}, err
-	}
-	u.ToBasicUserEntity(basicUser)
-	return *u, nil
-}
-
 func (u *User) ADDBasicUser(ctx context.Context, user User) error {
 	return mysql.NewBasicUser().ADD(ctx, user.FromBasicUserEntity())
 }
 
 func (u *User) UpdateBasicUser(ctx context.Context, user User) error {
 	return mysql.NewBasicUser().Update(ctx, user.FromBasicUserEntity())
-}
-
-func (u *User) GetFCUser(ctx context.Context, userID string) (User, error) {
-	fcUser, err := redis.NewFCUser().Get(ctx, userID)
-	if err != nil {
-		return User{}, err
-	}
-	u.ToFCUserEntity(fcUser)
-	return *u, nil
 }
 
 func (u *User) SetFCUser(ctx context.Context, IDs []uint64) error {
