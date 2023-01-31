@@ -2,10 +2,13 @@ package domain
 
 import (
 	"context"
+	"fmt"
 
 	"go-graphql-access/infra/mysql"
 	"go-graphql-access/infra/redis"
 )
+
+var _ UserService = (*User)(nil)
 
 // User 用户相关信息实体类
 type User struct {
@@ -20,6 +23,52 @@ type User struct {
 	FansUIDs []string `json:"fansUIDs"`
 	// PostIDS 发帖列表
 	PostIDS []uint64 `json:"postIDs"`
+}
+
+type Option func(*Options)
+
+// Options  每次请求的上下文数据
+type Options struct {
+	WithBasic  bool
+	WithFC     bool
+	WithFollow bool
+	WithFans   bool
+	WithPost   bool
+}
+
+// WithBasic 获取基本用户信息
+func WithBasic() Option {
+	return func(o *Options) {
+		o.WithBasic = true
+	}
+}
+
+// WithFC 获取用户喜爱分类ID列表
+func WithFC() Option {
+	return func(o *Options) {
+		o.WithFC = true
+	}
+}
+
+// WithFollow 获取用户关注列表
+func WithFollow() Option {
+	return func(o *Options) {
+		o.WithFollow = true
+	}
+}
+
+// WithFans 获取用户粉丝列表
+func WithFans() Option {
+	return func(o *Options) {
+		o.WithFans = true
+	}
+}
+
+// WithPost 获取用户发帖列表
+func WithPost() Option {
+	return func(o *Options) {
+		o.WithFans = true
+	}
 }
 
 // FromBasicEntity 从业务实体转化为db实体
@@ -52,14 +101,12 @@ func (u *User) ToFCUserEntity(user redis.FCUser) {
 
 // UserService 用户服务防腐层接口
 type UserService interface {
-	// GetBasicUser 获取用户基础信息
-	GetBasicUser(ctx context.Context, userID string) (User, error)
+	// GetUser 获取用户信息
+	GetUser(ctx context.Context, userID string, opts ...Option) (User, error)
 	// ADDBasicUser 新增用户基础信息
 	ADDBasicUser(ctx context.Context, user User) error
 	// UpdateBasicUser 修改用户实体信息
 	UpdateBasicUser(ctx context.Context, user User) error
-	// GetFCUser 获取喜爱分类ID列表
-	GetFCUser(ctx context.Context, userID string) (User, error)
 	// SetFCUser 设置喜爱分类ID
 	SetFCUser(ctx context.Context, IDs []uint64) error
 }
@@ -67,6 +114,29 @@ type UserService interface {
 // NewUserService 初始化用户服务变量
 func NewUserService() UserService {
 	return &User{}
+}
+
+func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User, error) {
+	var options Options
+	fmt.Println(opts)
+	for _, opt := range opts {
+		opt(&options)
+	}
+	if options.WithBasic {
+		basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
+		if err != nil {
+			return User{}, err
+		}
+		u.ToBasicUserEntity(basicUser)
+	}
+	if options.WithFC {
+		fcUser, err := redis.NewFCUser().Get(ctx, userID)
+		if err != nil {
+			return User{}, err
+		}
+		u.ToFCUserEntity(fcUser)
+	}
+	return *u, nil
 }
 
 func (u *User) GetBasicUser(ctx context.Context, userID string) (User, error) {

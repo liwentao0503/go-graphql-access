@@ -1,6 +1,9 @@
 package redis
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // favorite classification 用户喜爱分类列表
 type FCUser struct {
@@ -11,8 +14,8 @@ type FCUser struct {
 var FCIDs []uint64
 
 // KeyName hash表key名
-func KeyName() string {
-	return "favorite_classific:%s"
+func KeyName(key string) string {
+	return fmt.Sprintf("favorite_classific:%s", key)
 }
 
 // NewFCUser 初始化redis 用户喜爱分类ID存储实体
