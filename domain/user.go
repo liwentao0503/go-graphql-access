@@ -2,7 +2,6 @@ package domain
 
 import (
 	"context"
-	"fmt"
 
 	"go-graphql-access/infra/mysql"
 	"go-graphql-access/infra/redis"
@@ -118,7 +117,6 @@ func NewUserService() UserService {
 
 func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User, error) {
 	var options Options
-	fmt.Println(opts)
 	for _, opt := range opts {
 		opt(&options)
 	}
