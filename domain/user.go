@@ -144,6 +144,8 @@ func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User
 			return nil
 		})
 	}
+	// 目前构造entity没有字段冲突
+	// 需要的话在User里面或全局变量加lock ToFCUserEntity和ToBasicUserEntity里面锁处理
 	return *u, common.GoAndWait(ctx, handles)
 }
 

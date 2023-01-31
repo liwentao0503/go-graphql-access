@@ -7,6 +7,7 @@ import (
 
 type Handle func() error
 
+// GoAndWait 封装了sync.WaitGroup 直接构造好func 拉函数即可
 func GoAndWait(ctx context.Context, handles []Handle) (err error) {
 	wg := &sync.WaitGroup{}
 	wg.Add(len(handles))
