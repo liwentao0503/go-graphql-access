@@ -28,6 +28,6 @@ curl --location --request POST 'http://localhost:8080/graphql' \
 --header 'Cookie: pony' \
 --data-raw 'query query {
     getUserInfo(userID: "pony"){
-        userID, mobile, name
+        userID, mobile, name, fcIDs
     }
 }'
