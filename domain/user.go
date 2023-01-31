@@ -3,6 +3,7 @@ package domain
 import (
 	"context"
 
+	"go-graphql-access/common"
 	"go-graphql-access/infra/mysql"
 	"go-graphql-access/infra/redis"
 )
@@ -121,22 +122,29 @@ func (u *User) GetUser(ctx context.Context, userID string, opts ...Option) (User
 		opt(&options)
 	}
 
+	handles := make([]common.Handle, 0)
 	if options.WithBasic {
-		basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
-		if err != nil {
-			return User{}, err
-		}
-		u.ToBasicUserEntity(basicUser)
+		handles = append(handles, func() error {
+			basicUser, err := mysql.NewBasicUser().Get(ctx, userID)
+			if err != nil {
+				return err
+			}
+			u.ToBasicUserEntity(basicUser)
+			return nil
+		})
 	}
 
 	if options.WithFC {
-		fcUser, err := redis.NewFCUser().Get(ctx, userID)
-		if err != nil {
-			return User{}, err
-		}
-		u.ToFCUserEntity(fcUser)
+		handles = append(handles, func() error {
+			fcUser, err := redis.NewFCUser().Get(ctx, userID)
+			if err != nil {
+				return err
+			}
+			u.ToFCUserEntity(fcUser)
+			return nil
+		})
 	}
-	return *u, nil
+	return *u, common.GoAndWait(ctx, handles)
 }
 
 func (u *User) ADDBasicUser(ctx context.Context, user User) error {
