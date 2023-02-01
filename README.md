@@ -30,4 +30,4 @@ curl --location --request POST 'http://localhost:8080/graphql' \
     getUserInfo(userID: "pony"){
         userID, mobile, name, fcIDs
     }
-}''
+}'
