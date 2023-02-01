@@ -25,9 +25,9 @@ router: 配置路由信息
 
 curl --location --request POST 'http://localhost:8080/graphql' \
 --header 'Content-Type: application/graphql' \
---header 'Cookie: pony' \
+--header 'Cookie: Auth=Pass' \
 --data-raw 'query query {
     getUserInfo(userID: "pony"){
         userID, mobile, name, fcIDs
     }
-}'
+}''
