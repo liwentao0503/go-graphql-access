@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"go-graphql-access/router"
+
+	"github.com/facebookgo/grace/gracehttp"
 )
 
 type HttpHandlerDecorator func(http.HandlerFunc) http.HandlerFunc
@@ -73,9 +75,11 @@ func main() {
 		http.Handle(k, v)
 	}
 
-	// listen and serve
-	http.ListenAndServe(":8080", Handler(http.DefaultServeMux.ServeHTTP,
-		WithServerHeader, WithBasicAuth, WithDebugLog))
+	gracehttp.Serve(&http.Server{
+		Addr: ":8080",
+		Handler: Handler(http.DefaultServeMux.ServeHTTP,
+			WithServerHeader, WithBasicAuth, WithDebugLog),
+	})
 }
 
 func Init() error {

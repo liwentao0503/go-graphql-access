@@ -33,7 +33,7 @@ func (w Writer) Printf(format string, args ...interface{}) {
 	// 出可以将慢查询信息写入到sentry日志当中去
 	fmt.Println(slowSql)
 	/*
-		C:/Users/mayanan/Desktop/pro_go/topgoer_gorm/main.go:53 SLOW SQL >= 80ms
+		./main.go:53 SLOW SQL >= 80ms
 		[235.827ms] [rows:3] SELECT * FROM `users` WHERE `users`.`deleted` IS NULL
 	*/
 }
@@ -50,7 +50,7 @@ func InitDB() error {
 		},
 	)
 
-	// MySQl 驱动程序提供了 一些高级配置 可以在初始化过程中使用
+	// MySQL 驱动程序提供了 一些高级配置 可以在初始化过程中使用
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,
 		DefaultStringSize:         256,   // string 类型字段的默认长度
